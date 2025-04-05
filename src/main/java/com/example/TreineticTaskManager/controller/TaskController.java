@@ -40,7 +40,7 @@ public class TaskController {
 
     }
     @DeleteMapping(path = "/deleteTask/{task_id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable("task_id") Long task_id){
+    public ResponseEntity<TaskDTO> deleteTask(@PathVariable("task_id") Long task_id){
         try {
             taskService.deleteTaskById(task_id);
             return new ResponseEntity<>(HttpStatus.CREATED);
@@ -53,10 +53,10 @@ public class TaskController {
 
     }
     @PostMapping(path = "/saveTask")
-    public ResponseEntity<Void> saveTask(@RequestBody TaskDTO taskDTO){
+    public ResponseEntity<TaskDTO> saveTask(@RequestBody TaskDTO taskDTO){
         try {
-            taskService.saveTask(taskDTO);
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            TaskDTO savedTask = taskService.saveTask(taskDTO);
+            return new ResponseEntity<>(savedTask,HttpStatus.CREATED);
         }catch (UserNotFoundException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }catch (Exception e){
@@ -65,10 +65,10 @@ public class TaskController {
 
     }
     @PatchMapping(path = "/updateTask")
-    public ResponseEntity<Void> updateTask(@RequestBody TaskDTO taskDTO){
+    public ResponseEntity<TaskDTO> updateTask(@RequestBody TaskDTO taskDTO){
         try {
-            taskService.updateTask(taskDTO);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            TaskDTO updatedTask = taskService.updateTask(taskDTO);
+            return new ResponseEntity<>(updatedTask,HttpStatus.NO_CONTENT);
         }catch (TaskNotFoundException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }catch (Exception e){

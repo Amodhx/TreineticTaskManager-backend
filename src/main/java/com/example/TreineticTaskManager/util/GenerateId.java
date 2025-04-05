@@ -18,10 +18,19 @@ public class GenerateId {
     private TaskDAO taskDAO;
     public Long generateUserId(){
         List<UserEntity> all = userDAO.findAll();
-        return  all.get(all.size() - 1).getId() + 1;
+        if (!all.isEmpty()){
+            return  all.get(all.size() - 1).getId() + 1;
+        }else {
+            return 1L;
+        }
+
     }
     public Long generateTaskId(){
         List<TaskEntity> all = taskDAO.findAll();
-        return all.get(all.size() - 1).getId() + 1;
+        if (!all.isEmpty()){
+            return  all.get(all.size() - 1).getId() + 1;
+        }else {
+            return 1L;
+        }
     }
 }
