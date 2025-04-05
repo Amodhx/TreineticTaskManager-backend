@@ -5,12 +5,12 @@ import com.example.TreineticTaskManager.dao.UserDAO;
 import com.example.TreineticTaskManager.dto.impl.TaskDTO;
 import com.example.TreineticTaskManager.entity.impl.TaskEntity;
 import com.example.TreineticTaskManager.entity.impl.UserEntity;
+import com.example.TreineticTaskManager.util.MappingObjects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -20,56 +20,29 @@ public class TaskService {
     @Autowired
     private UserDAO userDAO;
 
-    public List<TaskDTO> getAllTasks(Long user_id){
-        UserEntity user = userDAO.findById(user_id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        List<TaskDTO> list = new ArrayList<>();
-        List<TaskEntity> byUser = taskDAO.findByUser(user);
+    @Autowired
+    private MappingObjects mappingObjects;
 
-        for (TaskEntity taskEntity : byUser) {
-            list.add(new TaskDTO(
-                    taskEntity.getId(),
-                    taskEntity.getTitle(),
-                    taskEntity.getDescription(),
-                    taskEntity.getStatus(),
-                    taskEntity.getCreatedAt(),
-                    taskEntity.getUser().getId()
-            ));
-        }
-        return  list;
+    public List<TaskDTO> getAllTasks(Long user_id){
+        UserEntity user = findUserOrThrow(user_id);
+        List<TaskEntity> byUser = taskDAO.findByUser(user);
+        return mappingObjects.taskEntityListToDTOList(byUser);
     }
     public TaskDTO getTaskById(Long task_id){
-        Optional<TaskEntity> task = taskDAO.findById(task_id);
-        if (task.isPresent()){
-            return new TaskDTO(task.get().getId(),
-                    task.get().getTitle(),
-                    task.get().getDescription(),
-                    task.get().getStatus(),
-                    task.get().getCreatedAt(),
-                    task.get().getUser().getId());
-        }else {
-            throw  new RuntimeException("Cant find task data");
-        }
+        TaskEntity task = findTaskOrThrow(task_id);
+        return mappingObjects.taskEntityToDTO(task);
     }
     public TaskDTO saveTask(TaskDTO taskDTO){
-        UserEntity userEntity = userDAO.findById(taskDTO.getUser_id()).orElseThrow(()->
-                new RuntimeException("Invalid user id"));
+        UserEntity userEntity = findUserOrThrow(taskDTO.getUser_id());
         TaskEntity taskToSave = new TaskEntity(taskDTO.getId(),taskDTO.getTitle(),taskDTO.getDescription(),taskDTO.getStatus(),taskDTO.getCreatedAt(),userEntity);
         TaskEntity savedTask = taskDAO.save(taskToSave);
 
-        return new TaskDTO(savedTask.getId(),
-                savedTask.getTitle(),
-                savedTask.getDescription(),
-                savedTask.getStatus(),
-                savedTask.getCreatedAt(),
-                savedTask.getUser().getId());
+        return mappingObjects.taskEntityToDTO(savedTask);
     }
     public TaskDTO updateTask(TaskDTO taskDTO) {
-        TaskEntity existingTask = taskDAO.findById(taskDTO.getId())
-                .orElseThrow(() -> new RuntimeException("Task not found with id: " + taskDTO.getId()));
+        TaskEntity existingTask = findTaskOrThrow(taskDTO.getId());
 
-        UserEntity userEntity = userDAO.findById(taskDTO.getUser_id())
-                .orElseThrow(() -> new RuntimeException("Invalid user id: " + taskDTO.getUser_id()));
+        UserEntity userEntity = findUserOrThrow(taskDTO.getUser_id());
 
         existingTask.setTitle(taskDTO.getTitle());
         existingTask.setDescription(taskDTO.getDescription());
@@ -79,14 +52,7 @@ public class TaskService {
 
         TaskEntity updatedTask = taskDAO.save(existingTask);
 
-        return new TaskDTO(
-                updatedTask.getId(),
-                updatedTask.getTitle(),
-                updatedTask.getDescription(),
-                updatedTask.getStatus(),
-                updatedTask.getCreatedAt(),
-                updatedTask.getUser().getId()
-        );
+        return mappingObjects.taskEntityToDTO(updatedTask);
     }
     public void deleteTaskById(Long taskId) {
         TaskEntity existingTask = taskDAO.findById(taskId)
@@ -94,5 +60,14 @@ public class TaskService {
 
         taskDAO.delete(existingTask);
     }
+    private UserEntity findUserOrThrow(Long userId) {
+        return userDAO.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+    }
+    private TaskEntity findTaskOrThrow(Long taskId){
+        return taskDAO.findById(taskId)
+                .orElseThrow(()->new RuntimeException("Task not found with ID: "+taskId));
+    }
+
 
 }
