@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/task")
+@CrossOrigin
 public class TaskController {
 
     @Autowired
@@ -21,7 +22,8 @@ public class TaskController {
     @GetMapping(path = "getAllTasks/{user_id}")
     public ResponseEntity<List<TaskDTO>> getAllTasks(@PathVariable("user_id") Long user_id){
         try {
-            return new ResponseEntity<>(taskService.getAllTasks(user_id),HttpStatus.CREATED);
+            List<TaskDTO> allTasks = taskService.getAllTasks(user_id);
+            return new ResponseEntity<>(allTasks,HttpStatus.CREATED);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -60,6 +62,7 @@ public class TaskController {
         }catch (UserNotFoundException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }catch (Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

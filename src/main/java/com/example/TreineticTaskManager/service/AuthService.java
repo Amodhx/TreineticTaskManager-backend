@@ -35,7 +35,9 @@ public class AuthService {
         UserEntity save = userDAO.save(mappingObjects.toUserEntity(userDTO));
         UserDetails userDetails = new CustomUserDetails(save);
         String generateToken = jwtService.generateToken(userDetails);
-        return new JwtAuthResponse(generateToken);
+        JwtAuthResponse jwtAuthResponse = new JwtAuthResponse(generateToken);
+        jwtAuthResponse.setId(save.getId());
+        return jwtAuthResponse;
     }
 
     public JwtAuthResponse signIn(UserDTO userDTO) {
@@ -46,7 +48,9 @@ public class AuthService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         UserDetails userDetails = new CustomUserDetails(user);
         var generateToken = jwtService.generateToken(userDetails);
-        return new JwtAuthResponse(generateToken);
+        JwtAuthResponse jwtAuthResponse = new JwtAuthResponse(generateToken);
+        jwtAuthResponse.setId(user.getId());
+        return jwtAuthResponse;
     }
 
 }
