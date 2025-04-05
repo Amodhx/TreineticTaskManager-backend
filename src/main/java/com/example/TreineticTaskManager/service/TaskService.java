@@ -7,6 +7,7 @@ import com.example.TreineticTaskManager.entity.impl.TaskEntity;
 import com.example.TreineticTaskManager.entity.impl.UserEntity;
 import com.example.TreineticTaskManager.exceptions.TaskNotFoundException;
 import com.example.TreineticTaskManager.exceptions.UserNotFoundException;
+import com.example.TreineticTaskManager.util.GenerateId;
 import com.example.TreineticTaskManager.util.MappingObjects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,8 @@ public class TaskService {
 
     @Autowired
     private MappingObjects mappingObjects;
+    @Autowired
+    private GenerateId generateId;
 
     public List<TaskDTO> getAllTasks(Long user_id) {
         UserEntity user = findUserOrThrow(user_id);
@@ -37,7 +40,7 @@ public class TaskService {
 
     public TaskDTO saveTask(TaskDTO taskDTO) {
         UserEntity userEntity = findUserOrThrow(taskDTO.getUser_id());
-        TaskEntity taskToSave = new TaskEntity(taskDTO.getId(), taskDTO.getTitle(), taskDTO.getDescription(), taskDTO.getStatus(), taskDTO.getCreatedAt(), userEntity);
+        TaskEntity taskToSave = new TaskEntity(generateId.generateTaskId(), taskDTO.getTitle(), taskDTO.getDescription(), taskDTO.getStatus(), taskDTO.getCreatedAt(), userEntity);
         TaskEntity savedTask = taskDAO.save(taskToSave);
         return mappingObjects.taskEntityToDTO(savedTask);
     }

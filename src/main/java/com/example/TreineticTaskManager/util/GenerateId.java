@@ -11,7 +11,6 @@ import java.util.List;
 
 @Component
 public class GenerateId {
-
     @Autowired
     private UserDAO userDAO;
     @Autowired
@@ -19,16 +18,15 @@ public class GenerateId {
     public Long generateUserId(){
         List<UserEntity> all = userDAO.findAll();
         if (!all.isEmpty()){
-            return  all.get(all.size() - 1).getId() + 1;
+            return all.get(all.size() -1).getId() +1;
         }else {
             return 1L;
         }
-
     }
     public Long generateTaskId(){
         List<TaskEntity> all = taskDAO.findAll();
         if (!all.isEmpty()){
-            return  all.get(all.size() - 1).getId() + 1;
+            return all.get(all.size() -1).getId() +1;
         }else {
             return 1L;
         }

@@ -6,9 +6,6 @@ public class JwtAuthResponse {
         this.token = token;
     }
 
-    public JwtAuthResponse() {
-    }
-
     public String getToken() {
         return token;
     }
