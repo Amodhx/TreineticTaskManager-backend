@@ -5,7 +5,6 @@ import com.example.TreineticTaskManager.dao.UserDAO;
 import com.example.TreineticTaskManager.dto.impl.TaskDTO;
 import com.example.TreineticTaskManager.entity.impl.TaskEntity;
 import com.example.TreineticTaskManager.entity.impl.UserEntity;
-import com.example.TreineticTaskManager.exceptions.DataPersistException;
 import com.example.TreineticTaskManager.exceptions.TaskNotFoundException;
 import com.example.TreineticTaskManager.exceptions.UserNotFoundException;
 import com.example.TreineticTaskManager.util.MappingObjects;

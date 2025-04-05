@@ -2,8 +2,9 @@ package com.example.TreineticTaskManager.controller;
 
 
 import com.example.TreineticTaskManager.dto.impl.TaskDTO;
+import com.example.TreineticTaskManager.exceptions.TaskNotFoundException;
+import com.example.TreineticTaskManager.exceptions.UserNotFoundException;
 import com.example.TreineticTaskManager.service.TaskService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,27 +19,61 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
     @GetMapping(path = "getAllTasks/{user_id}")
-    public List<TaskDTO> getAllTasks(@PathVariable("user_id") Long user_id){
-        return taskService.getAllTasks(user_id);
+    public ResponseEntity<List<TaskDTO>> getAllTasks(@PathVariable("user_id") Long user_id){
+        try {
+            return new ResponseEntity<>(taskService.getAllTasks(user_id),HttpStatus.CREATED);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     @GetMapping(path = "getTaskById/{task_id}")
     public ResponseEntity<TaskDTO> getTaskById(@PathVariable("task_id") Long task_id){
-        return new ResponseEntity<>(taskService.getTaskById(task_id),HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(taskService.getTaskById(task_id),HttpStatus.CREATED);
+        }catch (TaskNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
     @DeleteMapping(path = "/deleteTask/{task_id}")
     public ResponseEntity<Void> deleteTask(@PathVariable("task_id") Long task_id){
-        taskService.deleteTaskById(task_id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            taskService.deleteTaskById(task_id);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }catch (TaskNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+
     }
     @PostMapping(path = "/saveTask")
     public ResponseEntity<Void> saveTask(@RequestBody TaskDTO taskDTO){
-        taskService.saveTask(taskDTO);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            taskService.saveTask(taskDTO);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }catch (UserNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
     @PatchMapping(path = "/updateTask")
     public ResponseEntity<Void> updateTask(@RequestBody TaskDTO taskDTO){
-        taskService.updateTask(taskDTO);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            taskService.updateTask(taskDTO);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }catch (TaskNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 }
