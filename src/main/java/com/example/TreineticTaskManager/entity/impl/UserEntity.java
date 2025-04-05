@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class UserEntity implements SuperEntity {
     @Id
     private Long id;
-
     private String username;
     private String password;
+
 }
