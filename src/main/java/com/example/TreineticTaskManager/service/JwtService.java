@@ -1,6 +1,5 @@
 package com.example.TreineticTaskManager.service;
 
-import com.example.TreineticTaskManager.entity.impl.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -40,21 +39,6 @@ public class JwtService{
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {
         final Claims claims = extractAllClaims(token);
         return claimsResolvers.apply(claims);
-    }
-
-    public String refreshToken(UserDetails userDetails) {
-        return refreshToken(new HashMap<>(), userDetails);
-    }
-
-    private String refreshToken(Map<String, Object> extractClaims, UserDetails userDetails) {
-        extractClaims.put("role", userDetails.getAuthorities());
-        Date now = new Date();
-        Date refreshExpire = new Date(now.getTime() + 1000 * 600 * 600);
-
-        return Jwts.builder().setClaims(extractClaims)
-                .setSubject(userDetails.getUsername())
-                .setExpiration(refreshExpire)
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
     }
 
     private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
