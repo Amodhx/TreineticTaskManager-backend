@@ -23,4 +23,6 @@ public class TaskDTO implements SuperDTO {
     private String status;
     @NotNull
     private LocalDateTime createdAt;
+    @NotNull
+    private Long user_id;
 }
