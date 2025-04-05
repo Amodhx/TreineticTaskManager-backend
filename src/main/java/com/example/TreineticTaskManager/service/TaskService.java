@@ -5,19 +5,20 @@ import com.example.TreineticTaskManager.dao.UserDAO;
 import com.example.TreineticTaskManager.dto.impl.TaskDTO;
 import com.example.TreineticTaskManager.entity.impl.TaskEntity;
 import com.example.TreineticTaskManager.entity.impl.UserEntity;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class TaskService {
-    private final TaskDAO taskDAO;
-    private final UserDAO userDAO;
+    @Autowired
+    private TaskDAO taskDAO;
+
+    @Autowired
+    private UserDAO userDAO;
 
     public List<TaskDTO> getAllTasks(Long user_id){
         UserEntity user = userDAO.findById(user_id)
