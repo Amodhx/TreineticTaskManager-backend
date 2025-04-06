@@ -23,9 +23,9 @@ public class AuthController {
     public ResponseEntity<JwtAuthResponse> signIn(@RequestBody UserDTO userDTO){
         try {
             JwtAuthResponse jwtAuthResponse = authService.signIn(userDTO);
-            System.out.println(jwtAuthResponse.getEmail());
             return new ResponseEntity<>(jwtAuthResponse,HttpStatus.CREATED);
         }catch (Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -36,6 +36,7 @@ public class AuthController {
             JwtAuthResponse jwtAuthResponse = authService.signUp(userDTO);
             return new ResponseEntity<>(jwtAuthResponse,HttpStatus.CREATED);
         }catch (Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

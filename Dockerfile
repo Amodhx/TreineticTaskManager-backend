@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 LABEL authors="ACER"
-FROM openjdk:17-slim
+FROM openjdk:21-slim
+EXPOSE 5050
 ADD target/TreineticTaskManager.jar app.jar
-EXPOSE 8081
 ENTRYPOINT ["java","-jar","app.jar"]
