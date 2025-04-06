@@ -37,6 +37,7 @@ public class AuthService {
         String generateToken = jwtService.generateToken(userDetails);
         JwtAuthResponse jwtAuthResponse = new JwtAuthResponse(generateToken);
         jwtAuthResponse.setId(save.getId());
+        jwtAuthResponse.setEmail(save.getUsername());
         return jwtAuthResponse;
     }
 
@@ -50,7 +51,14 @@ public class AuthService {
         var generateToken = jwtService.generateToken(userDetails);
         JwtAuthResponse jwtAuthResponse = new JwtAuthResponse(generateToken);
         jwtAuthResponse.setId(user.getId());
+        jwtAuthResponse.setEmail(user.getUsername());
         return jwtAuthResponse;
+    }
+    public void changePassword(UserDTO userDTO){
+        UserEntity user = userDAO.findByUsername(userDTO.getUsername())
+                .orElseThrow(()->new UsernameNotFoundException("User Not Found"));
+        user.setPassword(userDTO.getPassword());
+        userDAO.save(user);
     }
 
 }
