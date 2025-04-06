@@ -57,8 +57,11 @@ public class AuthService {
     public void changePassword(UserDTO userDTO){
         UserEntity user = userDAO.findByUsername(userDTO.getUsername())
                 .orElseThrow(()->new UsernameNotFoundException("User Not Found"));
-        user.setPassword(userDTO.getPassword());
-        userDAO.save(user);
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        UserEntity save = userDAO.save(user);
+
+
+        System.out.println(save.getPassword());
     }
 
 }
