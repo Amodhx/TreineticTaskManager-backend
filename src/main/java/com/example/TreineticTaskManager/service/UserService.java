@@ -9,8 +9,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
+    private final UserDAO userDAO;
+
     @Autowired
-    private UserDAO userDAO;
+    public UserService(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
     public UserDetailsService userDetailsService() {
         return username ->
                 new CustomUserDetails(userDAO.findByUsername(username).

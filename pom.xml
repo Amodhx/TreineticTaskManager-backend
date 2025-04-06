@@ -123,6 +123,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>TreineticTaskManager</finalName>
 	</build>
 
 </project>
